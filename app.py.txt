@@ -1,0 +1,68 @@
+# app.py
+# Small Business Analytics Dashboard
+
+import dash
+from dash import dcc, html
+from dash.dependencies import Input, Output
+import pandas as pd
+import plotly.express as px
+
+# Load dataset
+df = pd.read_csv('data/sales_data.csv')
+
+# Initialize Dash app
+app = dash.Dash(__name__)
+app.title = "Small Business Dashboard"
+
+# Layout
+app.layout = html.Div([
+    html.H1("?? Small Business Analytics Dashboard", style={"textAlign": "center"}),
+
+    html.Div([
+        html.Label("Filter by Product Category:"),
+        dcc.Dropdown(
+            id="category_filter",
+            options=[{"label": cat, "value": cat} for cat in df["Category"].unique()],
+            value=df["Category"].unique()[0],
+            clearable=False
+        )
+    ], style={"width": "50%", "margin": "auto"}),
+
+    dcc.Graph(id="sales_trend"),
+    dcc.Graph(id="top_products"),
+    dcc.Graph(id="customer_type")
+])
+
+# Callbacks
+@app.callback(
+    [Output("sales_trend", "figure"),
+     Output("top_products", "figure"),
+     Output("customer_type", "figure")],
+    [Input("category_filter", "value")]
+)
+def update_graphs(selected_category):
+    filtered_df = df[df["Category"] == selected_category]
+
+    # Sales over time
+    trend_fig = px.line(
+        filtered_df.groupby("Date")["Sales"].sum().reset_index(),
+        x="Date", y="Sales", title="Sales Over Time"
+    )
+
+    # Top products
+    top_fig = px.bar(
+        filtered_df.groupby("Product")["Sales"].sum().reset_index(),
+        x="Product", y="Sales", title="Top Products"
+    )
+
+    # Customer types
+    cust_fig = px.pie(
+        filtered_df.groupby("Customer_Type")["Sales"].sum().reset_index(),
+        names="Customer_Type", values="Sales", title="Customer Segmentation"
+    )
+
+    return trend_fig, top_fig, cust_fig
+
+# Run the app
+if __name__ == "__main__":
+    app.run_server(debug=True)

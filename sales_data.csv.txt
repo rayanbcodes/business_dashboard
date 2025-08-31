@@ -1,0 +1,19 @@
+
+---
+
+## Step 4: Create the `data` Folder and CSV
+**Path:** `business_dashboard/data/sales_data.csv`  
+
+**Content:**
+```csv
+Date,Category,Product,Sales,Customer_Type
+2025-01-01,Electronics,Phone,500,New
+2025-01-02,Electronics,Laptop,800,Returning
+2025-01-03,Electronics,Tablet,300,New
+2025-01-04,Clothing,T-Shirt,50,New
+2025-01-05,Clothing,Jeans,70,Returning
+2025-01-06,Electronics,Headphones,150,Returning
+2025-01-07,Clothing,Jacket,120,New
+2025-01-08,Electronics,Monitor,200,New
+2025-01-09,Clothing,Shoes,90,Returning
+2025-01-10,Electronics,Keyboard,100,New
